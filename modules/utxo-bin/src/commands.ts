@@ -393,6 +393,21 @@ export const cmdGenerateAddress = {
   },
 };
 
+export const cmdGenerateKeypair = {
+  command: 'generateKey',
+  describe: 'generate bip32 keypair for testing purposes. DO NOT USE IN PRODUCTION.',
+
+  builder(b: yargs.Argv<unknown>): yargs.Argv<{ seed: string }> {
+    return b.option('seed', { type: 'string', default: 'setec astronomy' });
+  },
+
+  handler(argv: yargs.Arguments<{ seed: string }>): void {
+    const keypair = utxolib.testutil.getKey(argv.seed);
+    console.log(keypair.toBase58());
+    console.log(keypair.neutered().toBase58());
+  },
+};
+
 export const cmdParseXpub = {
   command: 'parseXpub [xpub]',
   describe: 'show xpub info',

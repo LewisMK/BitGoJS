@@ -1216,6 +1216,7 @@ export class Wallet implements IWallet {
     const rootAddress = _.get(this._wallet, 'receiveAddress.address');
 
     const newAddresses = _.times(count, async () => {
+      console.log('Creating address with params:', addressParams);
       this.bitgo.setRequestTracer(reqId);
       const newAddress = (await this.bitgo
         .post(this.baseCoin.url('/wallet/' + this._wallet.id + '/address'))
