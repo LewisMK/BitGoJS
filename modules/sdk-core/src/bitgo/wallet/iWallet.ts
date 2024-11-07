@@ -796,7 +796,7 @@ export interface IWallet {
   nftBalances(): NftBalance[] | undefined;
   unsupportedNftBalances(): NftBalance[] | undefined;
   coin(): string;
-  type(): WalletType | undefined;
+  type(): WalletType;
   multisigType(): 'onchain' | 'tss';
   multisigTypeVersion(): 'MPCv2' | undefined;
   label(): string;
