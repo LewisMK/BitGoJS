@@ -1,20 +1,57 @@
-import { toHex, TransactionType } from '@bitgo/sdk-core';
-import { coins } from '@bitgo/statics';
+import { toHex, TransactionType } from '../../../sdk-core';
+import { coins } from '../../../statics';
 import { fromBase64 } from '@cosmjs/encoding';
 import should from 'should';
 const bech32 = require('bech32-buffer');
 
-import { CosmosTransaction, SendMessage } from '@bitgo/abstract-cosmos';
+import { CosmosTransaction, SendMessage } from '../../../abstract-cosmos';
 import { RuneUtils } from '../../src/lib/utils';
 import * as testData from '../resources/trune';
+import { BitGoAPI } from '../../../sdk-api';
+import { Trune } from '../../src';
+// import {Tatom} from "../../../../modules/sdk-coin-atom";
 
 describe('Rune Transaction', () => {
   let tx: CosmosTransaction;
   const config = coins.get('tthorchain:rune');
+  // const config = coins.get('tatom');
   const utils = new RuneUtils(config.network.type);
 
   beforeEach(() => {
     tx = new CosmosTransaction(config, utils);
+  });
+
+  describe('test', () => {
+    it('some test', async function () {
+      const bitgo = new BitGoAPI({
+        accessToken: 'v2xad7bf418fad6e3a2d91def84cb8702c97b9836992b9f0fd7c88d8591eac68fdb',
+        env: 'staging',
+        // accessToken: 'v2x61f46356432943365c9262f4571e0860e0dd6241e263479d66fb06c107a32a83',
+        // env: 'test',
+      });
+
+      const coin = 'tthorchain:rune';
+      bitgo.register(coin, Trune.createInstance);
+      // const coin = 'tatom';
+      // bitgo.register(coin, Tatom.createInstance);
+
+      const walletId = '67359b1a0892a94fb4ccb819ca0ae8d5';
+      const walletPassphrase = 'Ghghjkg!455544llll';
+
+      bitgo.unlock({ otp: '000000' });
+      const walletInstance = await bitgo.coin(coin).wallets().get({ id: walletId });
+
+      await walletInstance.sendMany({
+        recipients: [
+          {
+            amount: '100000',
+            address: 'sthor18shcujd2xsfpll4vnxg4edxz3g3gtkl0agsxnj',
+          },
+        ],
+        walletPassphrase: walletPassphrase,
+        type: 'transfer',
+      });
+    });
   });
 
   describe('Empty transaction', () => {
